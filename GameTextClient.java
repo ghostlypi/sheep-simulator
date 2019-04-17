@@ -4,13 +4,13 @@ public class GameTextClient {
 	private World world;
 	private int maxAni;
 	private int numAni;
-	
+
 	public GameTextClient() {
 		world = new World();
 		maxAni = world.size/2;
 		numAni = 0;
 	}
-	
+
 	public Character[] checkAnimals() {
 		numAni = world.numAni;
 		if (numAni > maxAni) {
@@ -24,12 +24,12 @@ public class GameTextClient {
 		}
 		return null;
 	}
-	
+
 	public boolean canMove(Location loc) {
 		Environment e = world.getAnimals();
 		return e.isEmpty(loc);
 	}
-	
+
 	public void populate() {
 		for(int i = 0; i < maxAni; i++) {
 			if (i % 5 == 0)
@@ -38,7 +38,7 @@ public class GameTextClient {
 				world.addAnimal(Animal.SHEEP);
 		}
 	}
-	
+
 	public void act() {
 		Location [] locs = world.getAniLocs();
 		Environment e = world.getAnimals();
@@ -52,7 +52,7 @@ public class GameTextClient {
 		herbeat();
 		world.restore();
 	}
-	
+
 	public void predeat() {
 		Location [] locs = world.getAniLocs();
 		Environment e = world.getAnimals();
@@ -63,7 +63,7 @@ public class GameTextClient {
 			}
 		}
 	}
-	
+
 	public void herbeat() {
 		Location [] locs = world.getAniLocs();
 		Environment e = world.getAnimals();
@@ -74,7 +74,7 @@ public class GameTextClient {
 			}
 		}
 	}
-	
+
 	public void automatedActions() {
 		world.addAnimal(Animal.SHEEP);
 		world.update();
@@ -82,23 +82,23 @@ public class GameTextClient {
 		world.update();
 		act();
 	}
-	
+
 	public void playerActions() {
 		world.update();
 		addFence();
 	}
-	
+
 	public void actionsMannager() {
 		automatedActions();
 		playerActions();
 	}
-	
+
 	public void initRandPos() {
 		int end = (int) (Math.random()*1000);
-		for(int i = 0; i < end; i++) 
+		for(int i = 0; i < end; i++)
 			automatedActions();
 	}
-	
+
 	public void addFence() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println(this);
@@ -106,25 +106,35 @@ public class GameTextClient {
 	    int x = sc.nextInt();
 	    System.out.println("Enter y position:");
 	    int y = sc.nextInt();
-	    if(x != -1 && y != -1)
-	    	world.addFence(new Location(x,y));
+	    if(x > 0 && y > 0)
+	    	world.addFence(new Location(x-1,y-1));
+			else if(x < 0 && y < 0){
+				x = x*-1-1;
+				y = y*-1-1;
+				world.rmFence(new Location(x,y));
+			}else if((x == -1 && y == 1) || (x == -1 && y == 1)){
+				System.out.println("Ending Game ...");
+				System.exit(0);
+			}else
+				return;
 	}
-	
+
 	public String toString() {
 		return world.toString();
 	}
-	
+
 	public static void main(String[] args) {
 		GameTextClient g = new GameTextClient();
 		g.populate();
 		g.initRandPos();
+		System.out.println("To exit, enter -1 and 1");
 		System.out.println(g);
 		while(true) {
 			g.actionsMannager();
 			System.out.println(g);
 		}
 	}
-	
-	
-	
+
+
+
 }

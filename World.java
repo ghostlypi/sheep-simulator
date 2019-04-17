@@ -6,7 +6,7 @@ public class World {
 	private ArrayList<Location> aniLocs;
 	public int size;
 	public int numAni;
-	
+
 	public World(int rows, int cols) {
 		size = rows*cols;
 		til = new Environment(new Location(0,0), new Location(rows,cols));
@@ -21,7 +21,7 @@ public class World {
 		aniLocs = new ArrayList<>();
 		update();
 	}
-	
+
 	public Location[] getAniLocs() {
 		Location[] aniLocs = new Location[this.aniLocs.size()];
 		for(int i = 0; i < aniLocs.length; i++) {
@@ -29,11 +29,11 @@ public class World {
 		}
 		return aniLocs;
 	}
-	
+
 	public World() {
 		this(10,10);
 	}
-	
+
 	public void update() {
 		numAni = ani.numChars;
 		aniLocs = new ArrayList<>();
@@ -70,31 +70,31 @@ public class World {
 			}
 		}
 	}
-	
+
 	public void desertify(Location loc) {
 		if(til.getCharacter(loc).getType() == Tile.GRASS)
 			til.setCharacter(loc, new Dirt(loc), 13);
 	}
-	
-	public void restore() {		
+
+	public void restore() {
 		int x = (int)(Math.random()*(til.getMaxLoc().getX()-til.getMinLoc().getX()));
 		int y = (int)(Math.random()*(til.getMaxLoc().getY()-til.getMinLoc().getY()));
 		if(til.getCharacter(new Location(x,y)).getType() == Tile.DIRT)
 			til.setCharacter(new Location(x,y), new Grass(new Location(x,y)), 13);
 	}
-	
+
 	public Environment getAnimals() {
 		return ani;
 	}
-	
+
 	public Environment getTiles() {
 		return til;
 	}
-	
+
 	public String[][] getWorldState(){
 		return world;
 	}
-	
+
 	public void addAnimal(String str) {
 		if(str == Animal.SHEEP) {
 			ani.addCharacter(new Sheep("Bill", new Location()));
@@ -102,16 +102,21 @@ public class World {
 			ani.addCharacter(new Wolf("Bob", new Location()));
 		}
 	}
-	
+
 	public void addFence(Location loc) {
 		til.setCharacter(loc, new Fence(loc),13);
 		ani.setCharacter(loc, new Obstructor(loc),13);
 	}
-	
+
+	public void rmFence(Location loc) {
+		til.setCharacter(loc, new Dirt(loc),13);
+		ani.setCharacter(loc, null,13);
+	}
+
 	public void moveAnimal(Location from, Location to) {
 		ani.setCharacter(to, ani.removeCharacter(from), 13);
 	}
-	
+
 	public void eat(Location loc) {
 		for(int i = 0; i < 8; i++) {
 			Location l;
@@ -141,11 +146,11 @@ public class World {
 			}
 		}
 	}
-	
+
 	public Character die(Location loc) {
 		return ani.removeCharacter(loc);
 	}
-	
+
 	public String toString() {
 		update();
 		String out = "";
